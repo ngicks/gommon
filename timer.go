@@ -8,10 +8,15 @@ import "time"
 // Intention is to use as an unexported field of some structs.
 // And make it mock-able inside internal tests.
 type ITimer interface {
-	GetChan() <-chan time.Time
+	// Channel is equivalent of timer.C
+	Channel() <-chan time.Time
+	// Reset resets timer to to.Sub(now)
 	Reset(to, now time.Time)
+	// Stop stops this timer.
 	Stop()
 }
+
+var _ ITimer = NewTimerImpl()
 
 // TimerImpl is a struct that implements ITimer.
 type TimerImpl struct {
