@@ -15,25 +15,23 @@ const packageDcl = "package"
 const importPackages = `import "sync/atomic"`
 
 var stateTemplate = template.Must(template.New("v").Parse(`
-func New{{.StateName}}State() (embedder *{{.StateName}}StateEmbedder, setter *{{.StateName}}StateSetter) {
-	embedder = &{{.StateName}}StateEmbedder{}
-	setter = &{{.StateName}}StateSetter{embedder}
-	return
-}
-
-type {{.StateName}}StateEmbedder struct {
+// {{.StateName}}State simple atomic state primitive.
+type {{.StateName}}State struct {
 	s uint32
 }
 
-func (s *{{.StateName}}StateEmbedder) Is{{.StateName}}() bool {
+// Is{{.StateName}} is atomic state checker.
+// It returns true if state is set, and vice versa.
+func (s *{{.StateName}}State) Is{{.StateName}}() bool {
 	return atomic.LoadUint32(&s.s) == 1
 }
 
-type {{.StateName}}StateSetter struct {
-	inner *{{.StateName}}StateEmbedder
-}
-
-func (s *{{.StateName}}StateSetter) Set{{.StateName}}(to ...bool) (swapped bool) {
+// Set{{.StateName}} is atomic state setter.
+// Calling this, without any arg or args are all true, will set its state.
+// If one of to is false, it un-sets internal state. 
+//
+// It returns true when successfully set, false otherwise.
+func (s *{{.StateName}}State) Set{{.StateName}}(to ...bool) (swapped bool) {
 	setTo := true
 	for _, setState := range to {
 		if !setState {
@@ -41,10 +39,46 @@ func (s *{{.StateName}}StateSetter) Set{{.StateName}}(to ...bool) (swapped bool)
 		}
 	}
 	if setTo {
-		return atomic.CompareAndSwapUint32(&s.inner.s, 0, 1)
+		return atomic.CompareAndSwapUint32(&s.s, 0, 1)
 	} else {
-		return atomic.CompareAndSwapUint32(&s.inner.s, 1, 0)
+		return atomic.CompareAndSwapUint32(&s.s, 1, 0)
 	}
+}
+
+// New{{.StateName}}State builds splitted {{.StateName}}State wrapper.
+// Either or both can be embedded and or used as unexported member to hide it setter.
+func New{{.StateName}}State() (embedder *{{.StateName}}StateChecker, setter *{{.StateName}}StateSetter) {
+	s := new({{.StateName}}State)
+	embedder = &{{.StateName}}StateChecker{s}
+	setter = &{{.StateName}}StateSetter{s}
+	return
+}
+
+// {{.StateName}}StateSetter is sipmle wrapper of {{.StateName}}State.
+// It only exposes Is{{.StateName}}.
+type {{.StateName}}StateChecker struct {
+	s *{{.StateName}}State
+}
+
+// Is{{.StateName}} is atomic state checker.
+// It returns true if state is set, and vice versa.
+func (s *{{.StateName}}StateChecker) Is{{.StateName}}() bool {
+	return s.s.Is{{.StateName}}()
+}
+
+// {{.StateName}}StateSetter is sipmle wrapper of {{.StateName}}State.
+// It only exposes Set{{.StateName}}. 
+type {{.StateName}}StateSetter struct {
+	s *{{.StateName}}State
+}
+
+// Set{{.StateName}} is atomic state setter.
+// Calling this, without any arg or args are all true, will set its state.
+// If one of to is false, it un-sets internal state. 
+//
+// It returns true when successfully set, false otherwise.
+func (s *{{.StateName}}StateSetter) Set{{.StateName}}(to ...bool) (swapped bool) {
+	return s.s.Set{{.StateName}}(to...)
 }`))
 
 var (

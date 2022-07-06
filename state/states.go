@@ -4,57 +4,89 @@ package state
 import "sync/atomic"
 
 
-func NewWorkingState() (embedder *WorkingStateEmbedder, setter *WorkingStateSetter) {
-	embedder = &WorkingStateEmbedder{}
-	setter = &WorkingStateSetter{embedder}
-	return
-}
-
-type WorkingStateEmbedder struct {
+// WorkingState simple atomic state primitive.
+type WorkingState struct {
 	s uint32
 }
 
-func (s *WorkingStateEmbedder) IsWorking() bool {
+// IsWorking is atomic state checker.
+// It returns true if state is set, and vice versa.
+func (s *WorkingState) IsWorking() bool {
 	return atomic.LoadUint32(&s.s) == 1
 }
 
+// SetWorking is atomic state setter.
+// Calling this, without any arg or args are all true, will set its state.
+// If one of to is false, it un-sets internal state. 
+//
+// It returns true when successfully set, false otherwise.
+func (s *WorkingState) SetWorking(to ...bool) (swapped bool) {
+	setTo := true
+	for _, setState := range to {
+		if !setState {
+			setTo = false
+		}
+	}
+	if setTo {
+		return atomic.CompareAndSwapUint32(&s.s, 0, 1)
+	} else {
+		return atomic.CompareAndSwapUint32(&s.s, 1, 0)
+	}
+}
+
+// NewWorkingState builds splitted WorkingState wrapper.
+// Either or both can be embedded and or used as unexported member to hide it setter.
+func NewWorkingState() (embedder *WorkingStateChecker, setter *WorkingStateSetter) {
+	s := new(WorkingState)
+	embedder = &WorkingStateChecker{s}
+	setter = &WorkingStateSetter{s}
+	return
+}
+
+// WorkingStateSetter is sipmle wrapper of WorkingState.
+// It only exposes IsWorking.
+type WorkingStateChecker struct {
+	s *WorkingState
+}
+
+// IsWorking is atomic state checker.
+// It returns true if state is set, and vice versa.
+func (s *WorkingStateChecker) IsWorking() bool {
+	return s.s.IsWorking()
+}
+
+// WorkingStateSetter is sipmle wrapper of WorkingState.
+// It only exposes SetWorking. 
 type WorkingStateSetter struct {
-	inner *WorkingStateEmbedder
+	s *WorkingState
 }
 
+// SetWorking is atomic state setter.
+// Calling this, without any arg or args are all true, will set its state.
+// If one of to is false, it un-sets internal state. 
+//
+// It returns true when successfully set, false otherwise.
 func (s *WorkingStateSetter) SetWorking(to ...bool) (swapped bool) {
-	setTo := true
-	for _, setState := range to {
-		if !setState {
-			setTo = false
-		}
-	}
-	if setTo {
-		return atomic.CompareAndSwapUint32(&s.inner.s, 0, 1)
-	} else {
-		return atomic.CompareAndSwapUint32(&s.inner.s, 1, 0)
-	}
+	return s.s.SetWorking(to...)
 }
 
-func NewEndedState() (embedder *EndedStateEmbedder, setter *EndedStateSetter) {
-	embedder = &EndedStateEmbedder{}
-	setter = &EndedStateSetter{embedder}
-	return
-}
-
-type EndedStateEmbedder struct {
+// EndedState simple atomic state primitive.
+type EndedState struct {
 	s uint32
 }
 
-func (s *EndedStateEmbedder) IsEnded() bool {
+// IsEnded is atomic state checker.
+// It returns true if state is set, and vice versa.
+func (s *EndedState) IsEnded() bool {
 	return atomic.LoadUint32(&s.s) == 1
 }
 
-type EndedStateSetter struct {
-	inner *EndedStateEmbedder
-}
-
-func (s *EndedStateSetter) SetEnded(to ...bool) (swapped bool) {
+// SetEnded is atomic state setter.
+// Calling this, without any arg or args are all true, will set its state.
+// If one of to is false, it un-sets internal state. 
+//
+// It returns true when successfully set, false otherwise.
+func (s *EndedState) SetEnded(to ...bool) (swapped bool) {
 	setTo := true
 	for _, setState := range to {
 		if !setState {
@@ -62,8 +94,44 @@ func (s *EndedStateSetter) SetEnded(to ...bool) (swapped bool) {
 		}
 	}
 	if setTo {
-		return atomic.CompareAndSwapUint32(&s.inner.s, 0, 1)
+		return atomic.CompareAndSwapUint32(&s.s, 0, 1)
 	} else {
-		return atomic.CompareAndSwapUint32(&s.inner.s, 1, 0)
+		return atomic.CompareAndSwapUint32(&s.s, 1, 0)
 	}
+}
+
+// NewEndedState builds splitted EndedState wrapper.
+// Either or both can be embedded and or used as unexported member to hide it setter.
+func NewEndedState() (embedder *EndedStateChecker, setter *EndedStateSetter) {
+	s := new(EndedState)
+	embedder = &EndedStateChecker{s}
+	setter = &EndedStateSetter{s}
+	return
+}
+
+// EndedStateSetter is sipmle wrapper of EndedState.
+// It only exposes IsEnded.
+type EndedStateChecker struct {
+	s *EndedState
+}
+
+// IsEnded is atomic state checker.
+// It returns true if state is set, and vice versa.
+func (s *EndedStateChecker) IsEnded() bool {
+	return s.s.IsEnded()
+}
+
+// EndedStateSetter is sipmle wrapper of EndedState.
+// It only exposes SetEnded. 
+type EndedStateSetter struct {
+	s *EndedState
+}
+
+// SetEnded is atomic state setter.
+// Calling this, without any arg or args are all true, will set its state.
+// If one of to is false, it un-sets internal state. 
+//
+// It returns true when successfully set, false otherwise.
+func (s *EndedStateSetter) SetEnded(to ...bool) (swapped bool) {
+	return s.s.SetEnded(to...)
 }
