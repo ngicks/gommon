@@ -36,25 +36,25 @@ func (s *WorkingStateSetter) SetWorking(to ...bool) (swapped bool) {
 	}
 }
 
-func NewEndState() (embedder *EndStateEmbedder, setter *EndStateSetter) {
-	embedder = &EndStateEmbedder{}
-	setter = &EndStateSetter{embedder}
+func NewEndedState() (embedder *EndedStateEmbedder, setter *EndedStateSetter) {
+	embedder = &EndedStateEmbedder{}
+	setter = &EndedStateSetter{embedder}
 	return
 }
 
-type EndStateEmbedder struct {
+type EndedStateEmbedder struct {
 	s uint32
 }
 
-func (s *EndStateEmbedder) IsEnd() bool {
+func (s *EndedStateEmbedder) IsEnded() bool {
 	return atomic.LoadUint32(&s.s) == 1
 }
 
-type EndStateSetter struct {
-	inner *EndStateEmbedder
+type EndedStateSetter struct {
+	inner *EndedStateEmbedder
 }
 
-func (s *EndStateSetter) SetEnd(to ...bool) (swapped bool) {
+func (s *EndedStateSetter) SetEnded(to ...bool) (swapped bool) {
 	setTo := true
 	for _, setState := range to {
 		if !setState {
