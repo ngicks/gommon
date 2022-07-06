@@ -34,18 +34,18 @@ func (m *MockITimer) EXPECT() *MockITimerMockRecorder {
 	return m.recorder
 }
 
-// GetChan mocks base method.
-func (m *MockITimer) GetChan() <-chan time.Time {
+// Channel mocks base method.
+func (m *MockITimer) Channel() <-chan time.Time {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetChan")
+	ret := m.ctrl.Call(m, "Channel")
 	ret0, _ := ret[0].(<-chan time.Time)
 	return ret0
 }
 
-// GetChan indicates an expected call of GetChan.
-func (mr *MockITimerMockRecorder) GetChan() *gomock.Call {
+// Channel indicates an expected call of Channel.
+func (mr *MockITimerMockRecorder) Channel() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetChan", reflect.TypeOf((*MockITimer)(nil).GetChan))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Channel", reflect.TypeOf((*MockITimer)(nil).Channel))
 }
 
 // Reset mocks base method.
