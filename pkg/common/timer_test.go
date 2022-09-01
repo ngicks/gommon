@@ -1,22 +1,22 @@
-package gommon_test
+package common_test
 
 import (
 	"testing"
 	"time"
 
-	"github.com/ngicks/gommon"
+	"github.com/ngicks/gommon/pkg/common"
 	"github.com/stretchr/testify/require"
 )
 
 func TestTimer(t *testing.T) {
-	timer := gommon.NewTimerImpl()
+	timer := common.NewTimerImpl()
 
 	now := time.Now()
-	timer.Reset(now, now)
+	timer.ResetTo(now)
 
 	require.InDelta(t, now.UnixNano(), (<-timer.Channel()).UnixNano(), float64(time.Millisecond))
 
-	timer.Reset(now.Add(-time.Second), now)
+	timer.ResetTo(now.Add(-time.Second))
 	// emit fast.
 	require.InDelta(t, now.UnixNano(), (<-timer.Channel()).UnixNano(), float64(time.Millisecond))
 }

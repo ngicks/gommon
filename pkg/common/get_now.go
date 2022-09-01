@@ -1,12 +1,12 @@
-package gommon
+package common
 
 //go:generate mockgen -source get_now.go -destination __mock/get_now.go
 
 import "time"
 
 // GetNower is getter interface of now time.Time.
-// Intention is to use as an unexported field of some structs.
-// And make it mock-able inside internal tests.
+//
+// Use this as unexported field and mock it with ./__mock/get_now.go or any other implementation.
 type GetNower interface {
 	GetNow() time.Time
 }
