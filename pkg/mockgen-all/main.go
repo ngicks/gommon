@@ -45,7 +45,7 @@ func _main() error {
 		targetSrc := filepath.Join(*inputDir, dirent.Name())
 		var destination string
 		if *inputDir == *outputDir {
-			destination = filepath.Join(*outputDir, "__mock")
+			destination = filepath.Join(*outputDir, "__mock", dirent.Name())
 		} else {
 			destination = filepath.Join(*outputDir, dirent.Name())
 		}
