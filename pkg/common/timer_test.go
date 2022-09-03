@@ -9,7 +9,7 @@ import (
 )
 
 func TestTimer(t *testing.T) {
-	timer := common.NewTimerImpl()
+	timer := common.NewTimerReal()
 
 	now := time.Now()
 	timer.ResetTo(now)
