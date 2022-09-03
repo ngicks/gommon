@@ -1,7 +1,5 @@
 package common
 
-//go:generate mockgen -source get_now.go -destination __mock/get_now.go
-
 import "time"
 
 // GetNower is getter interface of now time.Time.

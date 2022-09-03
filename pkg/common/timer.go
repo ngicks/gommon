@@ -1,7 +1,5 @@
 package common
 
-//go:generate mockgen -source timer.go -destination __mock/timer.go
-
 import "time"
 
 // Timer is an interface equivalent to time.Timer. This is an interface so that it can be mocked.
