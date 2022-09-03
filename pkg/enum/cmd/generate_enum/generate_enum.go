@@ -80,15 +80,12 @@ func (e {{.TypeName}}{{if .MatcherReturns}}[T]{{end}}) Match(m {{.TypeName}}Matc
 
 func main() {
 	if err := _main(); err != nil {
-		panic(fmt.Sprintf("%+v", err))
+		panic(fmt.Sprintf("%+v\n", err))
 	}
 }
 
 func _main() (err error) {
 	flag.Parse()
-	defer func() {
-		err = errors.WithStack(err)
-	}()
 
 	if *pkgName == "" {
 		return fmt.Errorf("empty pkgName")
@@ -104,7 +101,7 @@ func _main() (err error) {
 
 	outFile, err := parseOut(*outFilename)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	if closer, ok := outFile.(io.Closer); ok {
 		defer closer.Close()
@@ -112,12 +109,12 @@ func _main() (err error) {
 
 	_, err = fmt.Fprintf(outFile, "%s\n", autoGenerationNotice)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	_, err = fmt.Fprintf(outFile, "package %s\n\n", *pkgName)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	variable := struct {
@@ -132,20 +129,20 @@ func _main() (err error) {
 		PanicOnNoMatch: *panicOnNoMatch,
 	}
 
-	fmt.Printf("%+v\n", variable)
+	fmt.Fprintf(os.Stderr, "%+v\n", variable)
 
 	err = enumTemplate.
 		Funcs(enumFuncMap).
 		Execute(outFile, variable)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	if *outFilename != "" && !*disableGoimports {
 		out, err := exec.Command("goimports", "-w", *outFilename).Output()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "err: %+v, out=%s\n", err, string(out))
-			return err
+			return errors.WithStack(err)
 		}
 	}
 
