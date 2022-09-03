@@ -52,6 +52,7 @@ func _main() error {
 
 		if !isDestMockgen(destination) {
 			fmt.Fprintf(os.Stderr, "ignoring: dest exists but not mockgen generated file. dest = %s\n", destination)
+			continue
 		}
 
 		cmd := exec.Command("mockgen", append([]string{"-source", targetSrc, "-destination", destination}, flag.Args()...)...)
