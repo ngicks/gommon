@@ -175,7 +175,7 @@ func capitalize(str string) string {
 	head := str[:1]
 	rest := str[1:]
 
-	return strings.ToUpper(head) + strings.ToLower(rest)
+	return strings.ToUpper(head) + rest
 }
 
 func joinDot(str string) string {
