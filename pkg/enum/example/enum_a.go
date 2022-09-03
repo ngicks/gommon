@@ -3,36 +3,36 @@ package enum
 
 import "os"
 
-type Enum[T any] struct {
+type EnumA[T any] struct {
 	data any
 }
 
-func EnumInt[T any](val int) Enum[T] {
-	return Enum[T]{
+func EnumAInt[T any](val int) EnumA[T] {
+	return EnumA[T]{
 		data: val,
 	}
 }
 
-func EnumString[T any](val string) Enum[T] {
-	return Enum[T]{
+func EnumAString[T any](val string) EnumA[T] {
+	return EnumA[T]{
 		data: val,
 	}
 }
 
-func EnumOsFile[T any](val *os.File) Enum[T] {
-	return Enum[T]{
+func EnumAOsFile[T any](val *os.File) EnumA[T] {
+	return EnumA[T]{
 		data: val,
 	}
 }
 
-type EnumMatcher[T any] struct {
+type EnumAMatcher[T any] struct {
 	Int    func(int) T
 	String func(string) T
 	OsFile func(*os.File) T
 	Any    func() T
 }
 
-func (e Enum[T]) Match(m EnumMatcher[T]) T {
+func (e EnumA[T]) Match(m EnumAMatcher[T]) T {
 	switch x := e.data.(type) {
 	case int:
 		if m.Int != nil {
@@ -52,5 +52,6 @@ func (e Enum[T]) Match(m EnumMatcher[T]) T {
 		return m.Any()
 	}
 
-	panic("non exhaustive match")
+	var ret T
+	return ret
 }
