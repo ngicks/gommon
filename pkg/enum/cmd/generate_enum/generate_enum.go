@@ -65,10 +65,12 @@ func (e {{.TypeName}}{{if .MatcherReturns}}[T]{{end}}) Match(m {{.TypeName}}Matc
 		{{if .MatcherReturns}}return {{end}}m.Any()
 	}
 
-	{{ if .PanicOnNoMatch}}
+	{{- if .PanicOnNoMatch}}
+
 	panic("non exhaustive match")
 	{{- else}}
 		{{- if .MatcherReturns}}
+
 			var ret T
 			return ret
 		{{- end}}
