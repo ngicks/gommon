@@ -67,6 +67,9 @@ func _main() error {
 
 func ensureMockgen() {
 	cmd := exec.Command("mockgen", "--help")
+	if cmd.Err != nil {
+		panic(cmd.Err)
+	}
 	_, err := cmd.Output()
 	if err != nil {
 		panic(err)
