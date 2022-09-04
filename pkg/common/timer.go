@@ -4,7 +4,7 @@ import "time"
 
 // Timer is an interface equivalent to time.Timer. This is an interface so that it can be mocked.
 //
-// Use this as an unexported field and swap out in tests.const
+// Use this as an unexported field and swap out in tests.
 // In non-test env, TimerReal should suffice. in tests, mock is pre-generated in ./__mock/timer.go, by mockgen.
 type Timer interface {
 	// Channel is equivalent of timer.C
