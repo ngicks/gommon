@@ -11,8 +11,8 @@ package readtext
 
 import "unicode/utf8"
 
-// EqualAsciiCaseInsensitiveStrict reports s1 and s2 is same string in case-insensitive way,
-// assuming s1 and s2 only contain ascii code.
+// EqualAsciiCaseInsensitiveStrict reports s1 and s2 is same string in case-insensitive way.
+// It assumes both only contain ascii code.
 func EqualAsciiCaseInsensitive(s1, s2 string) bool {
 	if len(s1) != len(s2) {
 		return false
@@ -20,8 +20,8 @@ func EqualAsciiCaseInsensitive(s1, s2 string) bool {
 	return EqualAsciiCaseInsensitiveStrict(s1, s2)
 }
 
-// EqualAsciiCaseInsensitiveStrict reports s1 and s2 is same string in case-insensitive way,
-// assuming s1 and s2 only contain ascii code and are same len.
+// EqualAsciiCaseInsensitiveStrict reports s1 and s2 is same string in case-insensitive way.
+// It assumes both only contain ascii code. Both must be same len.
 func EqualAsciiCaseInsensitiveStrict(s1, s2 string) bool {
 	for i := 0; i < len(s1); i++ {
 		c1 := s1[i]
