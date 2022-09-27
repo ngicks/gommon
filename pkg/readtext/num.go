@@ -96,3 +96,16 @@ func ReadNumSpN(val string, n int) (num int, remaining string, found bool) {
 	}
 	return num, val[i:], true
 }
+
+// ReadMatched tests val from head against every element of tab and reports first matched index.
+// It assumes val and elements of tab only contain ascii code.
+//
+// idx == -1 and remaining is val if no element matches.
+func ReadMatchedCaseInsensitive(tab []string, val string) (idx int, remaining string) {
+	for i, v := range tab {
+		if len(val) >= len(v) && EqualAsciiCaseInsensitiveStrict(val[0:len(v)], v) {
+			return i, val[len(v):]
+		}
+	}
+	return -1, val
+}

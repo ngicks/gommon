@@ -100,12 +100,85 @@ func TestReadNumSpN(t *testing.T) {
 		{input: "  234nnn", n: 4, expectedNum: 23, expectedFound: true, expectedRemaining: "4nnn"},
 		{input: "   34nnn", n: 4, expectedNum: 3, expectedFound: true, expectedRemaining: "4nnn"},
 		{input: "    4nnn", n: 4, expectedNum: 0, expectedFound: false, expectedRemaining: "    4nnn"},
+		{input: "   4 nnn", n: 0, expectedNum: 0, expectedFound: false, expectedRemaining: "   4 nnn"},
 	}
 
 	for _, testCase := range cases {
 		num, remaining, found := readtext.ReadNumSpN(testCase.input, testCase.n)
 		assert.Equal(t, testCase.expectedFound, found, "%+v", testCase)
 		assert.Equal(t, testCase.expectedNum, num)
+		assert.Equal(t, testCase.expectedRemaining, remaining)
+	}
+}
+
+type readMatchedCaseInsensitiveTestCase struct {
+	tab               []string
+	val               string
+	expectedIdx       int
+	expectedRemaining string
+}
+
+func TestReadMatchedCaseInsensitive(t *testing.T) {
+	cases := []readMatchedCaseInsensitiveTestCase{
+		{
+			tab:               []string{"foo", "bar", "baz"},
+			val:               "foo",
+			expectedIdx:       0,
+			expectedRemaining: "",
+		},
+		{
+			tab:               []string{"foo", "bar", "baz"},
+			val:               "bar",
+			expectedIdx:       1,
+			expectedRemaining: "",
+		},
+		{
+			tab:               []string{"foo", "bar", "baz"},
+			val:               "foobarbaz",
+			expectedIdx:       0,
+			expectedRemaining: "barbaz",
+		},
+		{
+			tab:               []string{"foo", "bar", "baz"},
+			val:               "nani!?",
+			expectedIdx:       -1,
+			expectedRemaining: "nani!?",
+		},
+		{
+			tab:               []string{"foo", "bar", "baz"},
+			val:               "Foo",
+			expectedIdx:       0,
+			expectedRemaining: "",
+		},
+		{
+			tab:               []string{"foo", "bar", "baz"},
+			val:               "fOo",
+			expectedIdx:       0,
+			expectedRemaining: "",
+		},
+		{
+			tab:               []string{"foo", "bar", "baz"},
+			val:               "fOO",
+			expectedIdx:       0,
+			expectedRemaining: "",
+		},
+		{
+			tab:               []string{"foo", "bar", "baz"},
+			val:               "BAR",
+			expectedIdx:       1,
+			expectedRemaining: "",
+		},
+		{
+			tab:               []string{"foo", "bar", "baz"},
+			val:               "baZ",
+			expectedIdx:       2,
+			expectedRemaining: "",
+		},
+	}
+
+	for _, testCase := range cases {
+		idx, remaining := readtext.ReadMatchedCaseInsensitive(testCase.tab, testCase.val)
+		assert.Equal(t, testCase.expectedIdx, idx, "%+v", testCase)
 		assert.Equal(t, testCase.expectedRemaining, remaining)
 	}
 }
