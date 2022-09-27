@@ -9,8 +9,6 @@
 // Parts modified or written by me are governed by license that can be found in LICENSE.
 package readtext
 
-import "unicode/utf8"
-
 // EqualAsciiCaseInsensitiveStrict reports s1 and s2 is same string in case-insensitive way.
 // It assumes both only contain ascii code.
 func EqualAsciiCaseInsensitive(s1, s2 string) bool {
@@ -36,19 +34,6 @@ func EqualAsciiCaseInsensitiveStrict(s1, s2 string) bool {
 		}
 	}
 	return true
-}
-
-// ReadRuneN cuts n utf-8 code points from val and returns as runes, returns rest as remaining.
-func ReadRuneN(val string, n int) (runes string, remaining string) {
-	var offset int
-	for i := 0; i < n; i++ {
-		_, size := utf8.DecodeRune([]byte(val[offset:]))
-		if size == 0 {
-			break
-		}
-		offset += size
-	}
-	return val[0:offset], val[offset:]
 }
 
 // IsDigit reports i-th is in range and i-th byte of val is digit of ascii code.
