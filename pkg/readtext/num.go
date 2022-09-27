@@ -76,6 +76,13 @@ func ReadNumN(val string, shouldBePadded bool, n int) (num int, remaining string
 	return num, val[i:], true
 }
 
+// ReadNumSpN reads up to n digits from head of val, returns string parsed as number.
+// remaining is rest of string.
+//
+// A Space after first digits but before n digit is failure.
+//
+// It reports successful operation by returning true found.
+// if shouldBePadded is true, first n bytes must be digits (namely '0' <= chara <= '9').
 func ReadNumSpN(val string, n int) (num int, remaining string, found bool) {
 	var i int
 	for ; i < n && (val[i] == ' ' || IsDigit(val, i)); i++ {
