@@ -15,7 +15,7 @@ import (
 var (
 	pkgName          = flag.String("pkg-name", "", "[required] package name of output")
 	typeName         = flag.String("type-name", "Enum", "output typename")
-	ty               = flag.String("ty", "", "[required] types to enumerate. comma seperated.")
+	ty               = flag.String("ty", "", "[required] types to enumerate. comma separated.")
 	matcherReturns   = flag.Bool("matcher-returns", true, "whether matcher returns type [T any].")
 	outFilename      = flag.String("o", "", "out filename. stdout if empty.")
 	disableGoimports = flag.Bool("disable-goimports", false, "disable applying goimports after code generation. forced to be false if outFilename is empty.")
@@ -46,9 +46,9 @@ func {{$.TypeName}}{{makeVariants $element}}{{if $.MatcherReturns}}[T any]{{end}
 
 type {{.TypeName}}Matcher{{if .MatcherReturns}}[T any]{{end}} struct {
 {{- range $index, $typName := .Types}}
-    {{makeVariants $typName}} func({{$typName}}) {{if $.MatcherReturns}}T{{end}}
+    {{makeVariants $typName}} func(v {{$typName}}) {{if $.MatcherReturns}}T{{end}}
 {{- end}} 
-	Any func() {{if $.MatcherReturns}}T{{end}}
+	Default func(v any) {{if $.MatcherReturns}}T{{end}}
 }
 
 func (e {{.TypeName}}{{if .MatcherReturns}}[T]{{end}}) Match(m {{.TypeName}}Matcher{{if .MatcherReturns}}[T]{{end}}) {{if .MatcherReturns}}T{{end}} {
@@ -63,8 +63,8 @@ func (e {{.TypeName}}{{if .MatcherReturns}}[T]{{end}}) Match(m {{.TypeName}}Matc
 {{- end}}
 	}
 
-	if m.Any != nil {
-		{{if .MatcherReturns}}ret = {{end}}m.Any()
+	if m.Default != nil {
+		{{if .MatcherReturns}}ret = {{end}}m.Default(e.data)
 		return {{if .MatcherReturns}} ret {{end}}
 	}
 
@@ -74,8 +74,7 @@ func (e {{.TypeName}}{{if .MatcherReturns}}[T]{{end}}) Match(m {{.TypeName}}Matc
 	{{- else}}
 		{{- if .MatcherReturns}}
 
-			var zeroValue T
-			return zeroValue
+			return ret
 		{{- end}}
 	{{- end}}
 }
