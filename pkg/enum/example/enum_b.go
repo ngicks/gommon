@@ -37,19 +37,23 @@ func (e EnumB) Match(m EnumBMatcher) {
 	case int:
 		if m.Int != nil {
 			m.Int(x)
+			return
 		}
 	case string:
 		if m.String != nil {
 			m.String(x)
+			return
 		}
 	case *os.File:
 		if m.OsFile != nil {
 			m.OsFile(x)
+			return
 		}
 	}
 
 	if m.Any != nil {
 		m.Any()
+		return
 	}
 
 	panic("non exhaustive match")

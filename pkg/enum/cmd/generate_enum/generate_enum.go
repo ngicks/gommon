@@ -52,17 +52,20 @@ type {{.TypeName}}Matcher{{if .MatcherReturns}}[T any]{{end}} struct {
 }
 
 func (e {{.TypeName}}{{if .MatcherReturns}}[T]{{end}}) Match(m {{.TypeName}}Matcher{{if .MatcherReturns}}[T]{{end}}) {{if .MatcherReturns}}T{{end}} {
+	{{- if .MatcherReturns}}var ret T{{end}}
 	switch x := e.data.(type) {
 {{- range $index, $typName := .Types}}
 	case {{$typName}}:
 		if m.{{makeVariants $typName}} != nil {
-			{{if $.MatcherReturns}}return {{end}}m.{{makeVariants $typName}}(x) 	
+			{{if $.MatcherReturns}}ret = {{end}}m.{{makeVariants $typName}}(x) 
+			return {{if $.MatcherReturns}} ret {{end}}
 		}
 {{- end}}
 	}
 
 	if m.Any != nil {
-		{{if .MatcherReturns}}return {{end}}m.Any()
+		{{if .MatcherReturns}}ret = {{end}}m.Any()
+		return {{if .MatcherReturns}} ret {{end}}
 	}
 
 	{{- if .PanicOnNoMatch}}
@@ -71,8 +74,8 @@ func (e {{.TypeName}}{{if .MatcherReturns}}[T]{{end}}) Match(m {{.TypeName}}Matc
 	{{- else}}
 		{{- if .MatcherReturns}}
 
-			var ret T
-			return ret
+			var zeroValue T
+			return zeroValue
 		{{- end}}
 	{{- end}}
 }

@@ -33,25 +33,30 @@ type EnumAMatcher[T any] struct {
 }
 
 func (e EnumA[T]) Match(m EnumAMatcher[T]) T {
+	var ret T
 	switch x := e.data.(type) {
 	case int:
 		if m.Int != nil {
-			return m.Int(x)
+			ret = m.Int(x)
+			return ret
 		}
 	case string:
 		if m.String != nil {
-			return m.String(x)
+			ret = m.String(x)
+			return ret
 		}
 	case *os.File:
 		if m.OsFile != nil {
-			return m.OsFile(x)
+			ret = m.OsFile(x)
+			return ret
 		}
 	}
 
 	if m.Any != nil {
-		return m.Any()
+		ret = m.Any()
+		return ret
 	}
 
-	var ret T
-	return ret
+	var zeroValue T
+	return zeroValue
 }
