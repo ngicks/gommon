@@ -23,7 +23,7 @@ Usage of /tmp/go-build581005351/b001/exe/generate_enum:
 
 It behaves like Tagged union. It actually is not.
 
-see [./exapmle](./example/). It has go:generate.
+see [./example](./example/). It has go:generate.
 
 ```
 //go:generate go run ../cmd/generate_enum/generate_enum.go -o enum_a.go -pkg-name example -type-name EnumA -ty int,string,*os.File -matcher-returns=true -panic-on-no-match=false -disable-goimports=false
