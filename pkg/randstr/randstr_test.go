@@ -10,14 +10,14 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/ngicks/gommon/pkg/randstr"
-	typeparamcommon "github.com/ngicks/type-param-common"
 	"github.com/ngicks/type-param-common/set"
+	"github.com/ngicks/type-param-common/util"
 	"github.com/stretchr/testify/require"
 )
 
 // making it shorter to call
 func must[T any](v T, err error) T {
-	return typeparamcommon.Must(v, err)
+	return util.Must(v, err)
 }
 
 // Tests that generator surley generates random values...
