@@ -54,7 +54,7 @@ func New{{.StateName}}State() (checker *{{.StateName}}StateChecker, setter *{{.S
 	return
 }
 
-// {{.StateName}}StateSetter is sipmle wrapper of {{.StateName}}State.
+// {{.StateName}}StateSetter is simple wrapper of {{.StateName}}State.
 // It only exposes Is{{.StateName}}.
 type {{.StateName}}StateChecker struct {
 	s *{{.StateName}}State
@@ -66,7 +66,7 @@ func (s *{{.StateName}}StateChecker) Is{{.StateName}}() bool {
 	return s.s.Is{{.StateName}}()
 }
 
-// {{.StateName}}StateSetter is sipmle wrapper of {{.StateName}}State.
+// {{.StateName}}StateSetter is simple wrapper of {{.StateName}}State.
 // It only exposes Set{{.StateName}}. 
 type {{.StateName}}StateSetter struct {
 	s *{{.StateName}}State
