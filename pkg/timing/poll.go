@@ -99,7 +99,16 @@ func PollUntil(predicate func(ctx context.Context) bool, interval time.Duration,
 	case <-t.Channel():
 		done()
 		return false
-	case <-doneCh:
-		return true
+	default:
+		select {
+		case <-ctx.Done():
+			done()
+			return false
+		case <-t.Channel():
+			done()
+			return false
+		case <-doneCh:
+			return true
+		}
 	}
 }
