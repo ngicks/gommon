@@ -153,7 +153,6 @@ func TestPollUntil(t *testing.T) {
 		}()
 
 		<-pred.blockOn
-		t.Log("unblocked")
 		<-done
 
 		assert.True(called.Load(), "time-out of PollUntil"+
