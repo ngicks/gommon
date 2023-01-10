@@ -2,6 +2,7 @@ package timing
 
 import (
 	"context"
+	"sync/atomic"
 	"time"
 
 	"github.com/ngicks/gommon/pkg/common"
@@ -51,11 +52,9 @@ func PollUntil(predicate func(ctx context.Context) bool, interval time.Duration,
 		<-doneCh
 	}()
 
+	var called atomic.Bool
 	done := func() {
-		select {
-		case <-doneCh:
-			return
-		default:
+		if called.CompareAndSwap(false, true) {
 			cancel()
 			close(doneCh)
 		}
