@@ -32,23 +32,24 @@ func CreateRepeatedWaiterFn(fn func(), repeat int) (waiter func()) {
 	return CreateWaiterFn(repeated...)
 }
 
-func createWaiterCh(waiterMaker func() func()) (waiter <-chan struct{}) {
-	waiterFn := waiterMaker()
+func createWaiterCh(waiterFn func()) (waiter <-chan struct{}) {
 
 	waiterCh := make(chan struct{})
 
 	go func() {
+		<-waiterCh
+		defer close(waiterCh)
 		waiterFn()
-		close(waiterCh)
 	}()
+	waiterCh <- struct{}{}
 
 	return waiterCh
 }
 
 func CreateWaiterCh(fn ...func()) (waiter <-chan struct{}) {
-	return createWaiterCh(func() func() { return CreateWaiterFn(fn...) })
+	return createWaiterCh(CreateWaiterFn(fn...))
 }
 
 func CreateRepeatedWaiterCh(fn func(), repeat int) (waiter <-chan struct{}) {
-	return createWaiterCh(func() func() { return CreateRepeatedWaiterFn(fn, repeat) })
+	return createWaiterCh(CreateRepeatedWaiterFn(fn, repeat))
 }
