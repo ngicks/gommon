@@ -37,6 +37,10 @@ func (p *pollPred) Pred(ctx context.Context) bool {
 	return p.nextReturn.Load()
 }
 
+func (p *pollPred) Unblock() {
+	<-p.blockOn
+}
+
 func TestPollUntil(t *testing.T) {
 	assert := assert.New(t)
 	assert.True(PollUntil(func(ctx context.Context) bool { return true }, time.Hour, time.Hour))
@@ -46,7 +50,7 @@ func TestPollUntil(t *testing.T) {
 		<-done
 		pred := newPollPred()
 		go func() {
-			<-pred.blockOn
+			pred.Unblock()
 		}()
 		assert.False(
 			PollUntil(pred.Pred, time.Hour, 100*time.Millisecond),
@@ -71,7 +75,7 @@ func TestPollUntil(t *testing.T) {
 		sw := make(chan struct{})
 		go func() {
 			<-sw
-			<-pred.blockOn
+			pred.Unblock()
 			old := time.Now()
 			for {
 				select {
@@ -107,7 +111,7 @@ func TestPollUntil(t *testing.T) {
 		}()
 		go func() {
 			// PollUntil blocked until predicate returns.
-			<-pred.blockOn
+			pred.Unblock()
 		}()
 
 		dur = 500 * time.Millisecond
@@ -131,7 +135,7 @@ func TestPollUntil(t *testing.T) {
 			close(done)
 		}()
 
-		<-pred.blockOn
+		pred.Unblock()
 		cancel()
 
 		<-done
@@ -152,7 +156,7 @@ func TestPollUntil(t *testing.T) {
 			close(done)
 		}()
 
-		<-pred.blockOn
+		pred.Unblock()
 		<-done
 
 		assert.True(called.Load(), "time-out of PollUntil"+
