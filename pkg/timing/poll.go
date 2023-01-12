@@ -9,8 +9,8 @@ import (
 )
 
 // swap out this if tests need to.
-var timerFactory = func() common.ITimer {
-	return common.NewTimerImpl()
+var timerFactory = func() common.Timer {
+	return common.NewTimerReal()
 }
 
 type pollParam struct {
@@ -80,7 +80,7 @@ func PollUntil(predicate func(ctx context.Context) bool, interval time.Duration,
 			}
 			t.Reset(interval)
 			select {
-			case <-t.Channel():
+			case <-t.C():
 			case <-doneCh:
 				return
 			}
@@ -95,7 +95,7 @@ func PollUntil(predicate func(ctx context.Context) bool, interval time.Duration,
 	case <-ctx.Done():
 		done()
 		return false
-	case <-t.Channel():
+	case <-t.C():
 		done()
 		return false
 	default:
@@ -103,7 +103,7 @@ func PollUntil(predicate func(ctx context.Context) bool, interval time.Duration,
 		case <-ctx.Done():
 			done()
 			return false
-		case <-t.Channel():
+		case <-t.C():
 			done()
 			return false
 		case <-doneCh:
