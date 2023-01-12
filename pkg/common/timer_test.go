@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/ngicks/gommon/pkg/common"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -16,8 +17,9 @@ func TestTimerRealStop(t *testing.T) {
 	timer := common.NewTimerReal()
 
 	assertNotExpired := func() {
+		t.Helper()
 		select {
-		case <-timer.Channel():
+		case <-timer.C():
 			t.Fatal()
 		default:
 		}
@@ -33,7 +35,7 @@ func TestTimerRealStop(t *testing.T) {
 	defer cancel()
 	select {
 	case <-ctx.Done():
-	case <-timer.Channel():
+	case <-timer.C():
 		t.Fatal()
 	}
 
@@ -41,14 +43,15 @@ func TestTimerRealStop(t *testing.T) {
 	timer.Reset(0)
 	time.Sleep(time.Microsecond)
 	select {
-	case <-timer.Channel():
+	case <-timer.C():
 	default:
 		t.Fatal()
 	}
 
 	timer.Reset(0)
 	time.Sleep(time.Microsecond)
-	timer.Stop()
+	assert.False(t, timer.Stop())
+	<-timer.C()
 	assertNotExpired()
 }
 
@@ -72,36 +75,9 @@ func TestTimerRealReset(t *testing.T) {
 
 			now := time.Now()
 			timer.Reset(tt)
-			<-timer.Channel()
+			<-timer.C()
 			then := time.Now()
 			require.GreaterOrEqual(t, int64(then.Sub(now)), int64(tt))
-		})
-	}
-}
-
-func TestTimerRealResetTo(t *testing.T) {
-	t.Parallel()
-
-	now := time.Now()
-	cases := []time.Time{
-		now.Add(time.Millisecond),
-		now.Add(time.Microsecond),
-		now.Add(time.Second),
-		now.Add(time.Second + time.Millisecond*50),
-		now.Add(2 * time.Second),
-	}
-
-	for idx, testCase := range cases {
-		tt := testCase
-		t.Run(fmt.Sprintf("case %d", idx), func(t *testing.T) {
-			t.Parallel()
-
-			timer := common.NewTimerReal()
-
-			timer.ResetTo(tt)
-			<-timer.Channel()
-			then := time.Now()
-			require.InDelta(t, then.UnixNano(), tt.UnixNano(), float64(10*time.Millisecond))
 		})
 	}
 }

@@ -3,27 +3,25 @@ package common
 import "time"
 
 // Timer is an interface equivalent to time.Timer. This is an interface so that it can be mocked.
+// Unlike time.Timer, newly created Timer should be stopped timer. Return value of Reset is omitted as
+// this interface does not need to care about compatibility with old programs.
 //
 // Use this as an unexported field and swap out in tests.
 // In non-test env, TimerReal should suffice. in tests, mock is pre-generated in ./__mock/timer.go, by mockgen.
 type Timer interface {
-	// Channel is equivalent of timer.C
-	Channel() <-chan time.Time
-	// Reset changes the timer to expire after duration d. If timer is already expired Channel will be drained before reset.
+	// C is equivalent of timer.C
+	C() <-chan time.Time
+	// Reset changes the timer to expire after duration d. If the timer is already expired, C is drained before reset.
 	Reset(d time.Duration)
-	// Reset changes the timer to expire at time to. If timer is already expired Channel will be drained.
-	ResetTo(to time.Time)
-	// Stop stops this timer. If timer is already expired Channel will be drained.
-	Stop()
+	// Stop prevents timer from firing. It returns true if it successfully stop the timer, false if it has already expired or been stopped.
+	Stop() bool
 }
 
 var _ Timer = NewTimerReal()
 
-// TimerReal is a struct that implements Timer.
-//
-// TimerReal uses real(runtime) timer.
+// TimerReal implements Timer using a real(runtime) time.Timer.
 type TimerReal struct {
-	*time.Timer
+	T *time.Timer
 }
 
 // NewTimerReal returns newly created TimerReal.
@@ -34,23 +32,28 @@ func NewTimerReal() *TimerReal {
 		<-timer.C
 	}
 	return &TimerReal{
-		Timer: timer,
+		T: timer,
 	}
 }
 
-func (t *TimerReal) Channel() <-chan time.Time {
-	return t.C
+func (t *TimerReal) C() <-chan time.Time {
+	return t.T.C
 }
 
-func (t *TimerReal) Stop() {
-	if !t.Timer.Stop() {
+func (t *TimerReal) Stop() bool {
+	return t.T.Stop()
+}
+
+func (t *TimerReal) Reset(d time.Duration) {
+	if !t.Stop() {
 		// non-blocking receive.
 		// in case of racy concurrent receivers.
 		select {
-		case <-t.C:
+		case <-t.T.C:
 		default:
 		}
 	}
+	t.T.Reset(d)
 }
 
 func (t *TimerReal) Reset(d time.Duration) {

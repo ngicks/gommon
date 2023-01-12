@@ -34,18 +34,18 @@ func (m *MockTimer) EXPECT() *MockTimerMockRecorder {
 	return m.recorder
 }
 
-// Channel mocks base method.
-func (m *MockTimer) Channel() <-chan time.Time {
+// C mocks base method.
+func (m *MockTimer) C() <-chan time.Time {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Channel")
+	ret := m.ctrl.Call(m, "C")
 	ret0, _ := ret[0].(<-chan time.Time)
 	return ret0
 }
 
-// Channel indicates an expected call of Channel.
-func (mr *MockTimerMockRecorder) Channel() *gomock.Call {
+// C indicates an expected call of C.
+func (mr *MockTimerMockRecorder) C() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Channel", reflect.TypeOf((*MockTimer)(nil).Channel))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "C", reflect.TypeOf((*MockTimer)(nil).C))
 }
 
 // Reset mocks base method.
@@ -60,22 +60,12 @@ func (mr *MockTimerMockRecorder) Reset(d interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Reset", reflect.TypeOf((*MockTimer)(nil).Reset), d)
 }
 
-// ResetTo mocks base method.
-func (m *MockTimer) ResetTo(to time.Time) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "ResetTo", to)
-}
-
-// ResetTo indicates an expected call of ResetTo.
-func (mr *MockTimerMockRecorder) ResetTo(to interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResetTo", reflect.TypeOf((*MockTimer)(nil).ResetTo), to)
-}
-
 // Stop mocks base method.
-func (m *MockTimer) Stop() {
+func (m *MockTimer) Stop() bool {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Stop")
+	ret := m.ctrl.Call(m, "Stop")
+	ret0, _ := ret[0].(bool)
+	return ret0
 }
 
 // Stop indicates an expected call of Stop.
