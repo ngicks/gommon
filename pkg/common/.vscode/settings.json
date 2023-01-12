@@ -1,3 +1,11 @@
 {
-  "cSpell.words": ["mockgen", "ngicks", "stretchr", "unexported"]
+  "cSpell.words": [
+    "gomock",
+    "mockgen",
+    "ngicks",
+    "Nower",
+    "stretchr",
+    "struct",
+    "unexported"
+  ]
 }
