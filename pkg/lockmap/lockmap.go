@@ -42,13 +42,10 @@ func (m *LockMap[K, V]) Range(f func(key K, value V) bool) {
 	})
 }
 
-func (m *LockMap[K, V]) RunWithinLock(k K, fn func(v V, set func(v V))) (ok bool) {
+func (m *LockMap[K, V]) RunWithinLock(k K, fn func(v V, has bool, set func(v V))) (ok bool) {
 	m.locks.Lock(k)
 	defer m.locks.Unlock(k)
 	v, ok := m.m.Load(k)
-	if !ok {
-		return false
-	}
-	fn(v, func(v V) { m.m.Store(k, v) })
+	fn(v, ok, func(v V) { m.m.Store(k, v) })
 	return true
 }

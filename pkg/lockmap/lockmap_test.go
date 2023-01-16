@@ -19,7 +19,7 @@ func TestLockMap(t *testing.T) {
 
 	done := make(chan struct{})
 	waiter := timing.CreateWaiterCh(func() {
-		someMap.RunWithinLock("1", func(v string, set func(v string)) {
+		someMap.RunWithinLock("1", func(v string, ok bool, set func(v string)) {
 			<-done
 			set("123")
 		})
@@ -32,6 +32,16 @@ func TestLockMap(t *testing.T) {
 	v, ok = someMap.Get("3")
 	assert.False(ok)
 	assert.Equal("", v)
+
+	someMap.RunWithinLock("9", func(v string, has bool, set func(v string)) {
+		assert.False(has)
+		assert.Equal("", v)
+		set("222")
+	})
+
+	v, ok = someMap.Get("9")
+	assert.True(ok)
+	assert.Equal("222", v)
 
 	blockings := [](<-chan struct{}){
 		timing.CreateWaiterCh(func() { someMap.Set("1", "15") }),
@@ -79,7 +89,7 @@ func TestLockMap_race(t *testing.T) {
 				someMap.Range(func(key, value string) bool {
 					return true
 				})
-				someMap.RunWithinLock(k, func(v string, set func(v string)) {
+				someMap.RunWithinLock(k, func(v string, ok bool, set func(v string)) {
 					if v == "2" {
 						set("15")
 					}
