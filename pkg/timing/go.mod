@@ -3,7 +3,7 @@ module github.com/ngicks/gommon/pkg/timing
 go 1.19
 
 require (
-	github.com/ngicks/gommon/pkg/common v0.1.0
+	github.com/ngicks/gommon/pkg/common v0.2.0
 	github.com/stretchr/testify v1.8.0
 )
 
