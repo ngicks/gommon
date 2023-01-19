@@ -1,10 +1,10 @@
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/ngicks/gommon/pkg/common v0.1.0 h1:AuR9evtdT/j3SVDI2jC9FCmymISIiNU+kRvj0IpB6ik=
-github.com/ngicks/gommon/pkg/common v0.1.0/go.mod h1:cOK3mkJaG6SXytBTP5tE2iAXj9idOvXyQxgtvuDb2Ic=
-github.com/ngicks/gommon/pkg/timing v0.0.3 h1:4McuEzQ+rzStbcczmR2YjP0sxWQStlI75B4ckNSZXec=
-github.com/ngicks/gommon/pkg/timing v0.0.3/go.mod h1:N276/vshVThImb6Mb020N1Gr0HN06ANg6BDLD03g4AA=
+github.com/ngicks/gommon/pkg/common v0.2.0 h1:rToyjjLKjkZCN2/joVedMUARL7JePl/o8DXy6RUpvL4=
+github.com/ngicks/gommon/pkg/common v0.2.0/go.mod h1:cOK3mkJaG6SXytBTP5tE2iAXj9idOvXyQxgtvuDb2Ic=
+github.com/ngicks/gommon/pkg/timing v0.0.4 h1:sRCK9Gu7RN96hj/MeCz8x727ZcipsLcNnBVLB2z7JnQ=
+github.com/ngicks/gommon/pkg/timing v0.0.4/go.mod h1:ymHXd6ARPn4II2WWr/GNMxkVxG3NwfFzqwnbGQnmzSo=
 github.com/ngicks/locker v0.0.0-20230116102153-fda89107dea5 h1:nmfvxjcbAK+buP0aOQysAy0ilyQOqp4BDRyQMsdkohI=
 github.com/ngicks/locker v0.0.0-20230116102153-fda89107dea5/go.mod h1:skyNVyps0fgbynjAKd8j+JlpuvfWI+pNTeqasl0LOYg=
 github.com/ngicks/type-param-common v0.2.0 h1:rP4mkZCj87l2QaP1U2E9Vjy9GbamBt1+UNd+pEMhyIo=
