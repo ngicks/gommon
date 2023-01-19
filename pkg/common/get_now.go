@@ -2,17 +2,17 @@ package common
 
 import "time"
 
-// GetNower is getter interface of now time.Time.
+// NowGetter is getter interface of now time.Time.
 //
 // Use this as unexported field and mock it with ./__mock/get_now.go or any other implementation.
-type GetNower interface {
+type NowGetter interface {
 	GetNow() time.Time
 }
 
-type GetNowImpl struct {
+type NowGetterReal struct {
 }
 
-// GetNow implements GetNower.
-func (g GetNowImpl) GetNow() time.Time {
+// GetNow implements NowGetter.
+func (g NowGetterReal) GetNow() time.Time {
 	return time.Now()
 }

@@ -9,7 +9,7 @@ import (
 )
 
 func TestGetNow(t *testing.T) {
-	getNow := common.GetNowImpl{}
+	getNow := common.NowGetterReal{}
 
 	now := time.Now()
 	gNow := getNow.GetNow()
